@@ -1,0 +1,680 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Netflix ITW Project</title>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="Imagens/netflixlogo.png" />
+
+    <!-- CSS -->
+    <link href="CSS/Netflix.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
+    <link href=" https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightslider/1.1.5/css/lightslider.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" rel="stylesheet" />
+
+    <!-- JS -->
+    <script src="../Scripts/jquery-3.5.1.js"></script>
+    <script src="../Scripts/knockout-3.5.1.js"></script>
+    
+
+</head>
+
+
+<body>
+    <nav class="navbar navbar-dark navbar-custom navbar-expand-lg mr-auto">
+        <a class="navbar-brand" href="Home.html" style="margin-left: 10%;"><img src="Imagens/netfliz.png" height="45" class="d-inline-block align-top" alt="Netflix logo" loading="lazy" style="padding:5px"></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto" style="width:100%; align-items:center">
+                <li class="nav-item active">
+                    <a class="nav-link" href="Home.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Movie.html">Filmes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="TV Show.html">Séries</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="categories.html">Categorias</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Outros
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="actors.html">Atores</a>
+                        <a class="dropdown-item" href="directors.html">Realizadores</a>
+                        <a class="dropdown-item" href="countries.html">Países</a>
+                        <a class="dropdown-item" href="titles.html">Todos os títulos</a>
+                    </div>
+                </li>
+
+                <li style="margin-left:auto;padding-right:100px">
+                    <form class="form-inline my-2 my-lg-0" id="1stform">
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#myModalSearchFilter">
+                            Filters
+                        </button>
+                        <div class="search-wrapper" style="transform:scale(0.6); margin-top:5px;">
+                            <div class="input-holder">
+                                <input id="forminput" class="form-control search-input" type="search" placeholder="Pesquisar" aria-label="Search">
+                                <button class="search-icon" onclick="submit; searchToggle(this, event);"><span></span></button>
+                            </div>
+                            <span class="close" onclick="searchToggle(this, event);"></span>
+                        </div>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- SEARCH -->
+    <div class="container">
+        <div class="modal fade in" id="myModalSearch" role="dialog" style="display: none">
+            <div class="modal-dialog modal-lg" style="width: 100%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Resultados da Busca</h2>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <h2 style="display: none" id="searchError1">Nenhum título encontrado</h2>
+                            <table class="table table-active" style="display: none" id="searchTable1">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Title Name</th>
+                                        <th scope="col">Id</th>
+                                        <th scope="col" class="text-right"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td id="Name"></td>
+                                        <td id="Id"></td>
+                                        <td class="text-right" id="titleDetails">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal - Filtros -->
+    <div class="container">
+        <div class="modal fade in" id="myModalSearchFilter" role="dialog" style="display: none">
+            <div class="modal-dialog modal-lg" style="width:100%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Escolha um dos filtros</h2>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <form class="form-group">
+                                <div class="pretty p-switch">
+                                    <input type="radio" name="filtro" value="filtro_Titulos" id="filtro_Titulos">
+                                    <div class="state p-danger">
+                                        <label for="filtro_Titulos">Filtrar por Títulos (padrão)</label>
+                                    </div>
+                                </div><br />
+                                <div class="pretty p-switch">
+                                    <input type="radio" name="filtro" value="filtro_Atores" id="filtro_Atores">
+                                    <div class="state p-danger">
+                                        <label for="filtro_Atores">Filtrar por Atores</label>
+                                    </div>
+                                </div><br />
+                                <div class="pretty p-switch">
+                                    <input type="radio" name="filtro" value="filtro_Filmes" id="filtro_Filmes">
+                                    <div class="state p-danger">
+                                        <label for="filtro_Filmes">Filtrar por Filmes</label>
+                                    </div>
+                                </div><br />
+                                <div class="pretty p-switch">
+                                    <input type="radio" name="filtro" value="filtro_Series" id="filtro_Series">
+                                    <div class="state p-danger">
+                                        <label for="filtro_Series">Filtrar por Séries</label>
+                                    </div>
+                                </div><br />
+                                <div class="pretty p-switch">
+                                    <input type="radio" name="filtro" value="filtro_Categoria" id="filtro_Categoria">
+                                    <div class="state p-danger">
+                                        <label for="filtro_Categoria">Filtrar por Categoria</label>
+                                    </div>
+                                </div><br />
+                                <div class="pretty p-switch">
+                                    <input type="radio" name="filtro" value="filtro_Paises" id="filtro_Paises">
+                                    <div class="state p-danger">
+                                        <label for="filtro_Paises">Filtrar por Países</label>
+                                    </div>
+                                </div><br />
+                                <div class="pretty p-switch">
+                                    <input type="radio" name="filtro" value="filtro_Diretores" id="filtro_Diretores">
+                                    <div class="state p-danger">
+                                        <label for="filtro_Diretores">Filtrar por Diretores</label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <section id="main">
+        <!--Showcase -->
+        <!-- Titulo-->
+        <h3 class="showcase-header">Os mais populares</h3>
+
+        <ul class="autoWidth cs-hidden">
+
+            <li class="item-a">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80002479">
+                        <img src="Display Images/peaky blinders.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-b">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80025678">
+                        <img src="Display Images/crown.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-c">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80175351">
+                        <img src="Display Images/kakegurui.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-d">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80100172">
+                        <img src="Display Images/dark.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80114855">
+                        <img src="Display Images/mindhunter.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80021955">
+                        <img src="Display Images/bettercallsaul.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80179831">
+                        <img src="Display Images/jojo.jpg" />
+                    </a>
+                </div>
+            </li>
+            <li class="item-f">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80223226">
+                        <img src="Display Images/a silent voice.jpg" />
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+
+
+    <section class="showcase">
+        <!--Showcase -->
+        <!-- Titulo-->
+        <h3 class="showcase-header">Os melhores filmes</h3>
+
+        <ul class="autoWidth1 cs-hidden">
+
+            <li class="item-a">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80223226">
+                        <img src="Display Images/a silent voice.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-b">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=60024942">
+                        <img src="Display Images/catch me if you can.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-c">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80135164">
+                        <img src="Display Images/1922.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-d">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=70039175">
+                        <img src="Display Images/v for vendetta.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80122759">
+                        <img src="Display Images/death note.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80091879">
+                        <img src="Display Images/hush.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=60022700">
+                        <img src="Display Images/panic room.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80198661">
+                        <img src="Display Images/open house.jpg" />
+                    </a>
+                </div>
+            </li>
+
+        </ul>
+    </section>
+
+
+    <section class="showcase">
+        <!--Showcase -->
+        <!-- Titulo-->
+        <h3 class="showcase-header">As melhores séries</h3>
+
+        <ul class="autoWidth1 cs-hidden">
+
+            <li class="item-a">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=81194523">
+                        <img src="Display Images/suits.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-b">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=70264888">
+                        <img src="Display Images/black mirror.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-c">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80117552">
+                        <img src="Display Images/ozark.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-d">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80175722">
+                        <img src="Display Images/the end of the f world.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=81075744">
+                        <img src="Display Images/queer eye.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=70178217">
+                        <img src="Display Images/house of cards.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80024057">
+                        <img src="Display Images/how to get away with murder.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80186863">
+                        <img src="Display Images/umbrella academy.jpg" />
+                    </a>
+                </div>
+            </li>
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80117470">
+                        <img src="Display Images/13 rw.jpg" />
+                    </a>
+                </div>
+            </li>
+
+        </ul>
+    </section>
+
+    <section class="showcase" style="margin-top:50px">
+        <!--Showcase -->
+        <!-- Titulo-->
+        <h3 class="showcase-header">Originais Netflix</h3>
+
+        <ul class="autoWidth cs-hidden">
+
+            <li class="item-b">
+                <div class="showcase-box original">
+                    <a href="titleDetails.html?id=80175351">
+                        <img src="Display Images/original kakegurui.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-b">
+                <div class="showcase-box original">
+                    <a href="titleDetails.html?id=80189685">
+                        <img src="Display Images/the witcher.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-b">
+                <div class="showcase-box original">
+                    <a href="titleDetails.html?id=80174974">
+                        <img src="Display Images/devilman crybaby.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-c">
+                <div class="showcase-box original">
+                    <a href="titleDetails.html?id=80114855">
+                        <img src="Display Images/original mindhunter.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-d">
+                <div class="showcase-box original">
+                    <a href="titleDetails.html?id=80189221">
+                        <img src="Display Images/the haunting of hill house.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box original">
+                    <a href="titleDetails.html?id=80021955">
+                        <img src="Display Images/original better call saul.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box original">
+                    <a href="titleDetails.html?id=80237905">
+                        <img src="Display Images/in the tall grass.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box original">
+                    <a href="titleDetails.html?id=80057918">
+                        <img src="Display Images/lucifer.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box original">
+                    <a href="titleDetails.html?id=80237905">
+                        <img src="Display Images/original ozark.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box original">
+                    <a href="titleDetails.html?id=80050063">
+                        <img src="Display Images/seven deadly sins.jpg" />
+                    </a>
+                </div>
+            </li>
+
+        </ul>
+    </section>
+
+    <section class="showcase">
+        <!--Showcase -->
+        <!-- Titulo-->
+        <h3 class="showcase-header">Os melhores animes</h3>
+
+        <ul class="autoWidth1 cs-hidden">
+
+            <li class="item-a">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=81033445">
+                        <img src="Display Images/neon genesis evangelion.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-b">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80182123">
+                        <img src="Display Images/violet evergarden.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-c">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80095241">
+                        <img src="Display Images/castlevania.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-d">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=70304252">
+                        <img src="Display Images/blue exorcist.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=70299043">
+                        <img src="Display Images/attack on titan.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80090673">
+                        <img src="Display Images/haikyu.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80173711">
+                        <img src="Display Images/erased.jpg" />
+                    </a>
+                </div>
+            </li>
+
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=70204981">
+                        <img src="Display Images/fmab.jpg" />
+                    </a>
+                </div>
+            </li>
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80179831">
+                        <img src="Display Images/jojo.jpg" />
+                    </a>
+                </div>
+            </li>
+            <li class="item-e">
+                <div class="showcase-box">
+                    <a href="titleDetails.html?id=80065146">
+                        <img src="Display Images/code geass.jpg" />
+                    </a>
+                </div>
+            </li>
+
+        </ul>
+    </section>
+
+
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <h6>Sobre</h6>
+                    <p class="text-justify">Trabalho prático realizado no âmbito da cadeira de ITW, com o objetivo de juntar as diversas aprendizagens feitas ao longo do semestre.</p>
+                </div>
+
+
+                <div class="col-xs-6 col-md-3">
+                    <h6>Acesso rápido</h6>
+                    <ul class="footer-links">
+                        <li><a href="Home.html">Home</a></li>
+                        <li><a href="Movie.html">Filmes</a></li>
+                        <li><a href="TV Show.html">Séries</a></li>
+                        <li><a href="categories.html">Categorias</a></li>
+                    </ul>
+                </div>
+                <div class="col-xs-6 col-md-3">
+                    <h6>Outros</h6>
+                    <ul class="footer-links">
+                        <li><a href="actors.html">Atores</a></li>
+                        <li><a href="countries.html">Países</a></li>
+                        <li><a href="directors.html">Realizadores</a></li>
+                        <li><a href="titles.html">Todos os títulos</a></li>
+                    </ul>
+                </div>
+
+            </div>
+            <hr>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                    <p class="copyright-text">
+                        &copy;ITW2021 - Introdução às Tecnologias Web
+                    </p>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <a href="http://www.ua.pt" title="Universidade de Aveiro">Universidade de Aveiro</a>
+                </div>
+            </div>
+        </div>
+
+    </footer>
+
+    <script src="JS/index.js"></script>
+    <script src="JS/Search animation.js"></script>
+
+
+    <script src="../Scripts/jquery-3.5.1.js"></script>
+    <script src="../Scripts/bootstrap.js"></script>
+    <script src="../Scripts/knockout-3.5.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightslider/1.1.5/js/lightslider.min.js" defer></script>
+
+
+    <script>
+        // Slider Script//
+        $(document).ready(function () {
+            $('.autoWidth').lightSlider({
+                autoWidth: true,
+                loop: true,
+                speed: 500, //ms'
+                auto: true,
+                loop: true,
+                slideEndAnimation: true,
+                pause: 5000,
+                onSliderLoad: function () {
+                    $('.autoWidth').removeClass('cS-hidden');
+                }
+            });
+
+            $('.autoWidth1').lightSlider({
+                autoWidth: true,
+                loop: true,
+                speed: 500, //ms'
+                auto: true,
+                loop: true,
+                slideEndAnimation: true,
+                pause: 5000,
+
+                thumbItem: 10,
+                pager: false,
+                gallery: false,
+                galleryMargin: 5,
+                thumbMargin: 5,
+                currentPagerPosition: 'middle',
+                onSliderLoad: function () {
+                    $('.autoWidth1').removeClass('cS-hidden');
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>

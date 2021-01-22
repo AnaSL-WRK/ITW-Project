@@ -1,0 +1,329 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Netflix ITW Project</title>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="Imagens/netflixlogo.png" />
+
+    <!-- CSS -->
+    <link href="CSS/Netflix.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
+    <link href=" https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightslider/1.1.5/css/lightslider.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <!-- JS -->
+    <script src="../Scripts/jquery-3.5.1.js"></script>
+    <script src="../Scripts/knockout-3.5.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightslider/1.1.5/js/lightslider.min.js" defer></script>
+
+
+    <style>
+        tbody > tr:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+
+
+        tbody > td:hover {
+            position: relative;
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: -9999px;
+            bottom: -9999px;
+            background-color: rgba(255, 255, 255, 0.2);
+            z-index: -1;
+        }
+    </style>
+</head>
+
+
+<body>
+    <nav class="navbar navbar-dark navbar-custom navbar-expand-lg mr-auto">
+        <a class="navbar-brand" href="Home.html" style="margin-left: 10%;"><img src="Imagens/netfliz.png" height="45" class="d-inline-block align-top" alt="Netflix logo" loading="lazy" style="padding:5px"></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto" style="width:100%; align-items:center">
+                <li class="nav-item">
+                    <a class="nav-link" href="Home.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Movie.html">Filmes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="TV Show.html">Séries</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="categories.html">Categorias</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Outros
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="actors.html">Atores</a>
+                        <a class="dropdown-item" href="directors.html">Realizadores</a>
+                        <a class="dropdown-item" href="countries.html">Países</a>
+                        <a class="dropdown-item" href="titles.html">Todos os títulos</a>
+                    </div>
+                </li>
+
+                <li style="margin-left:auto;padding-right:100px">
+                    <form class="form-inline my-2 my-lg-0" id="1stform">
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#myModalSearchFilter">
+                            Filters
+                        </button>
+                        <div class="search-wrapper" style="transform:scale(0.6); margin-top:5px;">
+                            <div class="input-holder">
+                                <input id="forminput" class="form-control search-input" type="search" placeholder="Pesquisar" aria-label="Search">
+                                <button class="search-icon" onclick="submit; searchToggle(this, event);"><span></span></button>
+                            </div>
+                            <span class="close" onclick="searchToggle(this, event);"></span>
+                        </div>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- SEARCH -->
+    <div class="container">
+        <div class="modal fade in" id="myModalSearch" role="dialog" style="display: none">
+            <div class="modal-dialog modal-lg" style="width: 100%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Resultados da Busca</h2>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <h2 style="display: none" id="searchError1">Nenhum título encontrado</h2>
+                            <table class="table table-active" style="display: none" id="searchTable1">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Title Name</th>
+                                        <th scope="col">Id</th>
+                                        <th scope="col" class="text-right"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td id="Name"></td>
+                                        <td id="Id"></td>
+                                        <td class="text-right" id="titleDetails">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal - Filtros -->
+    <div class="container">
+        <div class="modal fade in" id="myModalSearchFilter" role="dialog" style="display: none">
+            <div class="modal-dialog modal-lg" style="width:100%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Escolha um dos filtros</h2>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <form class="form-group">
+                                <div class="pretty p-switch">
+                                    <input type="radio" name="filtro" value="filtro_Titulos" id="filtro_Titulos">
+                                    <div class="state p-danger">
+                                        <label for="filtro_Titulos">Filtrar por Títulos (padrão)</label>
+                                    </div>
+                                </div><br />
+                                <div class="pretty p-switch">
+                                    <input type="radio" name="filtro" value="filtro_Atores" id="filtro_Atores">
+                                    <div class="state p-danger">
+                                        <label for="filtro_Atores">Filtrar por Atores</label>
+                                    </div>
+                                </div><br />
+                                <div class="pretty p-switch">
+                                    <input type="radio" name="filtro" value="filtro_Filmes" id="filtro_Filmes">
+                                    <div class="state p-danger">
+                                        <label for="filtro_Filmes">Filtrar por Filmes</label>
+                                    </div>
+                                </div><br />
+                                <div class="pretty p-switch">
+                                    <input type="radio" name="filtro" value="filtro_Series" id="filtro_Series">
+                                    <div class="state p-danger">
+                                        <label for="filtro_Series">Filtrar por Séries</label>
+                                    </div>
+                                </div><br />
+                                <div class="pretty p-switch">
+                                    <input type="radio" name="filtro" value="filtro_Categoria" id="filtro_Categoria">
+                                    <div class="state p-danger">
+                                        <label for="filtro_Categoria">Filtrar por Categoria</label>
+                                    </div>
+                                </div><br />
+                                <div class="pretty p-switch">
+                                    <input type="radio" name="filtro" value="filtro_Paises" id="filtro_Paises">
+                                    <div class="state p-danger">
+                                        <label for="filtro_Paises">Filtrar por Países</label>
+                                    </div>
+                                </div><br />
+                                <div class="pretty p-switch">
+                                    <input type="radio" name="filtro" value="filtro_Diretores" id="filtro_Diretores">
+                                    <div class="state p-danger">
+                                        <label for="filtro_Diretores">Filtrar por Diretores</label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="border-bottom pt-4 pb-2 mb-3">
+            <h2 data-bind="text:displayName"></h2>
+        </div>
+        <!-- ko if:records().length > 0 -->
+        <div class="col-12 small" style="color:floralwhite">
+            <div class="row">
+                <p class="mr-auto pt-2">
+                    <span data-bind="html: 'Page: ' + currentPage() + ' of ' + totalPages()"></span><br />
+                    <span data-bind="html: 'Categories: '+ fromRecord() + '-' + toRecord() + ' of ' + totalRecords()"></span>
+                </p>
+                <div class="my-0 pt-3">
+                    <ul class="pagination">
+                        <!-- ko if: currentPage() > 5 && totalPages() > 10 -->
+                        <li class="page-item"><a class="page-link" title="First Page" data-bind="attr: { href: './categories.html?page=' + '1',  rel:'prev'}">⇤</a></li>
+                        <li class="page-item"><a class="page-link" title="Previous Page" data-bind="attr: { href: './categories.html?page=' + previousPage(),  rel:'prev'}">←</a></li>
+                        <!-- /ko -->
+                        <!-- ko foreach: pageArray()-->
+                        <!-- ko if:$data == $parent.currentPage() -->
+                        <li class="active page-item"><a class="page-link" data-bind="attr: { title:'Current Page ' + $data }, text: $data"></a></li>
+                        <!-- /ko -->
+                        <!-- ko if:$data != $parent.currentPage() -->
+                        <li class="page-item"><a class="page-link" data-bind="attr: { href: './categories.html?page=' + $data, title:'Goto Page ' + $data }, text:$data"></a></li>
+                        <!-- /ko -->
+                        <!-- /ko -->
+                        <!-- ko if: currentPage() < totalPages() - 4 && totalPages() > 9 -->
+                        <li class="page-item"><a class="page-link" title="Next Page" data-bind="attr: { href: './categories.html?page=' + nextPage(), rel:'next' }">→</a></li>
+                        <li class="page-item"><a class="page-link" title="Last Page" data-bind="attr: { href: './categories.html?page=' + totalPages() }">⇥</a></li>
+                        <!-- /ko -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /ko -->
+
+        <div class="container container1" style="margin:auto;">
+            <div class="clearfix"></div>
+            <table style="margin:auto">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Category</th>
+                        <th scope="col" class="text-right"></th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: records">
+                    <tr>
+                        <td data-bind="text:Id"></td>
+                        <td data-bind="text:Name"></td>
+                        <td class="text-right">
+                            <a class="btn  btn-sm" data-bind="attr: { href:'./categoryDetails.html?id=' + Id }">
+                                <i class="fa fa-eye" title="Selecione para ver detalhes"></i>
+                            </a>
+                         
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="background-color:#141414">
+                <div class="modal-header modal-header-custom text-light">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        <img src="Imagens/netfliz.png" height="30" /> A carregar...
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fa fa-spin fa-3x fa-refresh"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <footer class="site-footer" style="margin-top:40px">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <h6>Sobre</h6>
+                    <p class="text-justify">Trabalho prático realizado no âmbito da cadeira de ITW, com o objetivo de juntar as diversas aprendizagens feitas ao longo do semestre.</p>
+                </div>
+
+
+                <div class="col-xs-6 col-md-3">
+                    <h6>Acesso rápido</h6>
+                    <ul class="footer-links">
+                        <li><a href="Home.html">Home</a></li>
+                        <li><a href="Movie.html">Filmes</a></li>
+                        <li><a href="TV Show.html">Séries</a></li>
+                        <li><a href="categories.html">Categorias</a></li>
+                    </ul>
+                </div>
+                <div class="col-xs-6 col-md-3">
+                    <h6>Outros</h6>
+                    <ul class="footer-links">
+                        <li><a href="actors.html">Atores</a></li>
+                        <li><a href="countries.html">Países</a></li>
+                        <li><a href="directors.html">Realizadores</a></li>
+                        <li><a href="titles.html">Todos os títulos</a></li>
+                    </ul>
+                </div>
+
+            </div>
+            <hr>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                    <p class="copyright-text">
+                        &copy;ITW2021 - Introdução às Tecnologias Web
+                    </p>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <a href="http://www.ua.pt" title="Universidade de Aveiro">Universidade de Aveiro</a>
+                </div>
+            </div>
+        </div>
+
+    </footer>
+    <script src="JS/index.js"></script>
+    <script src="JS/categories.js"></script>
+    <script src="JS/Search animation.js"></script>
+    <script src="../Scripts/jquery-3.5.1.js"></script>
+    <script src="../Scripts/bootstrap.js"></script>
+    <script src="../Scripts/knockout-3.5.1.js"></script>
+</body>
+</html>
